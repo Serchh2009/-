@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Te Amo Conie 💖</title>
+  <style>
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      height: 100%;
+      background: black;
+      font-family: 'Segoe UI', sans-serif;
+      cursor: pointer;
+    }
+
+    canvas#matrix {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+
+    .love-message {
+      position: absolute;
+      color: #ff3399;
+      font-size: 3rem;
+      font-weight: bold;
+      pointer-events: none;
+      transform: translate(-50%, -50%);
+      animation: explode 1s ease-out forwards;
+      z-index: 3;
+    }
+
+    @keyframes explode {
+      0% {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+        text-shadow: 0 0 10px #ff3399, 0 0 30px #ff3399;
+      }
+      100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(3);
+        text-shadow: 0 0 50px #ff3399;
+      }
+    }
+  </style>
+</head>
+<body>
+  <canvas id="matrix"></canvas>
+
+  <script>
+    const canvas = document.getElementById('matrix');
+    const ctx = canvas.getContext('2d');
+
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const phrases = [
+      "Te Amo", "I Love You", "Je T’aime", "Ich liebe dich",
+      "Ti Amo", "Eu Te Amo", "Te iubesc", "T’estimo",
+      "Я тебя люблю", "T’aimi", "Wo Ai Ni", "Te vul",
+      "Aşıkım sana", "Mi amas vin"
+    ];
+        
+    const phrasesNickname = [
+      "Mi niña", "Mi Conie", "Mailov", "Amor de mi vida",
+      "Mi linda", "Bonita", "Mi preciosa", "Mi princesita",
+      "Bella", "Mi futura esposa", "Futura madre de mis hijos", "Mi dueña",
+      "Mi bb", "Cachetoncita", "Mi vida", "Cielito",
+      "Mi solecito", "Niña de mis ojos", "Todo lo que soñé", "Mi amor",
+      "Mi reina", "Mi mujer", "Mi chica", "Mi mundo",
+      "Mi todo", "Mi novia", "MÍA"
+    ];
+
+    const fontSize = 32;
+    const speed = 25;
+    ctx.font = `${fontSize}px monospace`;
+
+    let fallingPhrases = [];
+
+    function addPhrase() {
+      const text = phrasesNickname[Math.floor(Math.random() * phrasesNickname.length)];
+      const x = Math.random() * (canvas.width - ctx.measureText(text).width);
+      fallingPhrases.push({ text, x, y: 0 });
+    }
+
+    function draw() {
+      ctx.fillStyle = "rgba(0, 0, 0, 0.09)";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      ctx.fillStyle = "#ff3399";
+      ctx.font = `${fontSize}px monospace`;
+
+      for (let i = 0; i < fallingPhrases.length; i++) {
+        const p = fallingPhrases[i];
+        ctx.fillText(p.text, p.x, p.y);
+        p.y += speed;
+
+        if (p.y > canvas.height + fontSize) {
+          fallingPhrases.splice(i, 1);
+          i--;
+        }
+      }
+
+      if (Math.random() > 0.88) {
+        addPhrase();
+      }
+    }
+
+    setInterval(draw, 90);
+
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    // 💥 Mostrar frase al hacer clic
+    document.addEventListener("click", (event) => {
+      const phrase = phrases[Math.floor(Math.random() * phrases.length)];
+
+      const msg = document.createElement("div");
+      msg.classList.add("love-message");
+      msg.textContent = phrase;
+      msg.style.left = `${event.clientX}px`;
+      msg.style.top = `${event.clientY}px`;
+
+      document.body.appendChild(msg);
+
+      // Eliminar luego de animación
+      setTimeout(() => {
+        msg.remove();
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
